@@ -433,7 +433,7 @@
                                   (:run @state))
                          (swap! state assoc-in [:run :shuffled-during-access :rd] true))
                        (swap! state update-in [:stats :corp :shuffle-count] (fnil + 0) 1)
-                       (swap! state update-in [:corp :deck] shuffle)
+                       (swap! state update-in [:corp :deck] rng/shuffle)
                        (trigger-event state side :corp-shuffle-deck))
                      ;; TODO - used exclusively for hellion beta test
                      (when (and (:access @state)

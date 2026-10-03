@@ -1135,7 +1135,7 @@
                 :cost [(->c :click 1)]
                 :label "Reveal a random card from the Grip"
                 :async true
-                :effect (effect (if-let [revealed-card (-> runner :hand shuffle first)]
+                :effect (effect (if-let [revealed-card (-> runner :hand rng/shuffle first)]
                                (do (system-msg state side (str "uses " (:title card) " to reveal "
                                                                (:title revealed-card) " from the Grip"))
                                    (reveal state side eid revealed-card))

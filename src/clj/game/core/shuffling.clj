@@ -134,7 +134,7 @@
 (defn shuffle-deck
   "Shuffle R&D/Stack."
   [state side {:keys [close]}]
-  (swap! state update-in [side :deck] shuffle)
+  (swap! state update-in [side :deck] rng/shuffle)
   (play-sfx state side "shuffle")
   (if close
     (do

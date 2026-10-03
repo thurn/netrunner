@@ -1346,7 +1346,7 @@
   (if (= :archives (get-server-type (first server)))
     (let [discard (get-in @state [:corp :discard])
           known   (->> discard (filter :seen) (mapv #(dissoc % :new)))
-          unknown (->> discard (filter (complement :seen)) shuffle (mapv #(assoc % :seen true :new true)))]
+          unknown (->> discard (filter (complement :seen)) rng/shuffle (mapv #(assoc % :seen true :new true)))]
       (swap! state assoc-in [:corp :discard] (concat known unknown))
       (if (pos? (count unknown))
         (trigger-event-simult state side eid :archives-flipped nil {:count (count unknown)})

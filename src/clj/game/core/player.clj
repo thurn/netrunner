@@ -1,4 +1,5 @@
-(ns game.core.player)
+(ns game.core.player
+  (:require [game.rng :as rng]))
 
 (defrecord HandSize
   [base total])
@@ -132,7 +133,7 @@
      :hand-size (map->HandSize {:base 5 :total 5})
      :agenda-point 0 :agenda-point-req 7
      :rd-access-fn seq
-     :hq-access-fn shuffle
+     :hq-access-fn rng/shuffle
      :brain-damage 0
      :keep false
      :quote r-quote}))
