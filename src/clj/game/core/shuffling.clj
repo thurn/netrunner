@@ -1,5 +1,6 @@
 (ns game.core.shuffling
   (:require
+   [game.rng :as rng]
    [clojure.string :as str]
    [game.core.card :refer [corp? in-discard? get-card]]
    [game.core.eid :refer [effect-completed]]
@@ -30,9 +31,7 @@
   ;; this should theoretically be invisible, since any random slice of the possible sets of deck orderings is also random,
   ;; but it is "more correct" to do - anyone playing more than 170 cards can live with it - nbk, 2025
   [^java.util.Collection c]
-  (let [al (java.util.ArrayList. c)]
-    (java.util.Collections/shuffle al rng)
-    (clojure.lang.RT/vector (.toArray al))))
+  (rng/shuffle c rng))
 
 (defn shuffle!
   "Shuffles the vector in @state [side kw]."

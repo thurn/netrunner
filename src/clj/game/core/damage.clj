@@ -1,5 +1,6 @@
 (ns game.core.damage
   (:require
+   [game.rng :as rng]
     [game.core.card :refer [get-title]]
     [game.core.eid :refer [complete-with-result effect-completed make-eid]]
     [game.core.engine :refer [checkpoint queue-event trigger-event trigger-event-simult]]
@@ -71,7 +72,7 @@
                     chosen-cards (seq (get-chosen-damage state))
                     chosen-cids (into #{} (map :cid chosen-cards))
                     leftovers (remove #(contains? chosen-cids (:cid %)) hand)
-                    cards-trashed (->> (shuffle leftovers)
+                    cards-trashed (->> (rng/shuffle leftovers)
                                        (take (- n (count chosen-cards)))
                                        (concat chosen-cards))]
                 (when (= dmg-type :brain)

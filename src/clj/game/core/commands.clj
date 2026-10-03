@@ -1,5 +1,6 @@
 (ns game.core.commands
   (:require
+   [game.rng :as rng]
    [cljc.java-time.instant :as inst]
    [clojure.string :as string]
    [game.core.actions :refer [score]]
@@ -187,7 +188,7 @@
 
 (defn command-roll [state side value]
   (let [value (constrain-value value 1 1000)]
-    (system-msg state side (str "rolls a " value " sided die and rolls a " (inc (rand-int value))))))
+    (system-msg state side (str "rolls a " value " sided die and rolls a " (inc (rng/rand-int value))))))
 
 (defn command-set-mark
   "Sets a central server as the mark for the turn"
@@ -519,7 +520,7 @@
                                                :choices {:card (fn [t] (same-side? (:side t) %2))}}
                                               (make-card {:title "/disable-card command"}) nil)
             "/discard"    #(toast %1 %2 "/discard number takes the format #n")
-            "/discard-random" #(move %1 %2 (rand-nth (get-in @%1 [%2 :hand])) :discard)
+            "/discard-random" #(move %1 %2 (rng/rand-nth (get-in @%1 [%2 :hand])) :discard)
             "/draw"       #(draw %1 %2 (make-eid %1) (constrain-value value 0 1000))
             "/enable-card" #(resolve-ability %1 %2
                                              {:prompt "Choose a card to enable"

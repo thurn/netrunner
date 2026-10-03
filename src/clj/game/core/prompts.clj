@@ -1,5 +1,6 @@
 (ns game.core.prompts
   (:require
+   [game.rng :as rng]
    [clj-uuid :as uuid]
    [game.core.board :refer [get-all-cards]]
    [game.core.eid :refer [effect-completed make-eid]]
@@ -19,7 +20,7 @@
       []
       (for [[idx choice] (map-indexed vector (keep identity choices))]
         {:value choice
-         :uuid (uuid/v4)
+         :uuid (rng/uuid-v4)
          :idx idx}))))
 
 (defn update-selectable
@@ -83,7 +84,7 @@
                   #(if (not= (:value %) dice-msg)
                      (f %)
                      (show-prompt state side card
-                                  (str message " (Dice result: " (inc (rand-int 6)) ")")
+                                  (str message " (Dice result: " (inc (rng/rand-int 6)) ")")
                                   other-choices f args))
                   args))))
 

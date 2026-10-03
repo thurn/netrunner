@@ -1,5 +1,6 @@
 (ns game.core.mark
   (:require
+   [game.rng :as rng]
    [game.core.card :refer [get-card]]
    [game.core.engine :refer [trigger-event register-events]]
    [game.core.say :refer [system-msg]]
@@ -18,7 +19,7 @@
 
 (defn identify-mark
   [state]
-  (let [new-mark (rand-nth [:hq :rd :archives])]
+  (let [new-mark (rng/rand-nth [:hq :rd :archives])]
     (set-mark state new-mark)
     (system-msg state :runner (str "identifies [their] mark to be " (central->name new-mark)))))
 

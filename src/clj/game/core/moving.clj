@@ -1,5 +1,6 @@
 (ns game.core.moving
   (:require
+   [game.rng :as rng]
     [clojure.string :as string]
     [game.core.agendas :refer [update-all-agenda-points]]
     [game.core.board :refer [all-active-installed]]
@@ -488,7 +489,7 @@
   "Force the discard of n cards from the hand by trashing them"
   ([state from-side eid to-side n] (discard-from-hand state from-side eid to-side n nil))
   ([state from-side eid to-side n args]
-   (let [cards (take n (shuffle (get-in @state [to-side :hand])))]
+   (let [cards (take n (rng/shuffle (get-in @state [to-side :hand])))]
      (trash-cards state from-side eid cards (assoc args :unpreventable true)))))
 
 (defn swap-legal?

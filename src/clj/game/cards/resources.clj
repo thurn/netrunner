@@ -1,5 +1,6 @@
 (ns game.cards.resources
   (:require
+[game.rng :as rng]
    [clojure.string :as str]
    [game.core.access :refer [access-bonus access-n-cards breach-server get-only-card-to-access steal
                              num-cards-to-access steal-cost-bonus]]
@@ -833,7 +834,7 @@
                 :msg (msg "trash " (quantify (min (get-counters card :power) (count (:hand corp))) "card")
                           " from HQ")
                 :effect (effect (trash-cards state side eid (take (min (get-counters card :power) (count (:hand corp)))
-                                                       (shuffle (:hand corp))) {:cause-card card}))}]})
+                                                       (rng/shuffle (:hand corp))) {:cause-card card}))}]})
 
 (defcard "Climactic Showdown"
   (letfn [(iced-servers [state side eid card]
@@ -1417,7 +1418,7 @@
   {:events [{:event :successful-run
              :silent true
              :async true
-             :effect (effect (let [target (first (shuffle (:hand corp)))]
+             :effect (effect (let [target (first (rng/shuffle (:hand corp)))]
                             (system-msg state :runner (str "uses " (:title card) " to force the Corp to reveal " (:title target) " from HQ"))
                             (reveal state :corp eid target)))
              :req (req (genetics-trigger? state side :successful-run))}]})
@@ -2571,7 +2572,7 @@
                 :change-in-game-state {:req (req (seq (:hand corp)))}
                 :msg "force the Corp to trash 2 random cards from HQ"
                 :async true
-                :effect (effect (trash-cards state :corp eid (take 2 (shuffle (:hand corp))) {:cause-card card}))}]})
+                :effect (effect (trash-cards state :corp eid (take 2 (rng/shuffle (:hand corp))) {:cause-card card}))}]})
 
 (defcard "Open Market"
   (let [ability {:once :per-turn
@@ -4013,7 +4014,7 @@
 
 (defcard "Utopia Shard"
   (shard-constructor "Utopia Shard" :hq "force the Corp to discard 2 cards from HQ at random"
-                     (effect (trash-cards state :corp eid (take 2 (shuffle (:hand corp))) {:cause-card card}))))
+                     (effect (trash-cards state :corp eid (take 2 (rng/shuffle (:hand corp))) {:cause-card card}))))
 
 (defcard "Valentina Ferreira Carvalho"
   {:on-install {:prompt "Choose one"

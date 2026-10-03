@@ -1,5 +1,6 @@
 (ns game.cards.hardware
   (:require
+[game.rng :as rng]
    [clojure.set :as set]
    [game.core.access :refer [access-bonus access-card access-n-cards breach-server
                              get-only-card-to-access turn-archives-faceup]]
@@ -780,7 +781,7 @@
                                         (seq (:hand corp)))))
                           :waiting-prompt true
                           :prompt "Reveal and host a card from HQ (at random)"
-                          :yes-ability {:effect (effect (let [target-card (first (shuffle (:hand corp)))]
+                          :yes-ability {:effect (effect (let [target-card (first (rng/shuffle (:hand corp)))]
                                                        (system-msg state side
                                                                    (str "uses Detente to reveal and host "
                                                                         (:title target-card)
@@ -1588,7 +1589,7 @@
                             (not (in-discard? (:accessed-card context)))
                             (not (in-scored? (:accessed-card context))))
              :once :per-turn
-             :effect (effect (let [card-to-trash (first (shuffle (:hand corp)))
+             :effect (effect (let [card-to-trash (first (rng/shuffle (:hand corp)))
                                 card-seen? (same-card? (:accessed-card context) card-to-trash)
                                 card-to-trash (if card-seen? (assoc card-to-trash :seen true)
                                                   card-to-trash)]
@@ -2152,7 +2153,7 @@
                       (link+ 1)]
    :events [{:event :jack-out
              :async true
-             :effect (effect (let [card (first (shuffle (:hand corp)))]
+             :effect (effect (let [card (first (rng/shuffle (:hand corp)))]
                             (system-msg state :runner (str  "force the Corp to reveal " (:title card) " from HQ"))
                             (reveal state :corp eid card)))}]})
 

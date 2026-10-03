@@ -1,5 +1,6 @@
 (ns game.cards.assets
   (:require
+[game.rng :as rng]
    [clojure.pprint :as pprint]
    [clojure.set :as set]
    [clojure.string :as str]
@@ -190,7 +191,7 @@
                              :effect (effect (if (pos? (quot target 2))
                                             (let [prevented (quot target 2)
                                                   unprevented (- (count (:hand corp)) prevented)]
-                                              (doseq [c (take unprevented (shuffle (:hand corp)))]
+                                              (doseq [c (take unprevented (rng/shuffle (:hand corp)))]
                                                 (move state :corp c :deck))
                                               (when (pos? unprevented)
                                                 (shuffle! state :corp :deck))
@@ -3348,7 +3349,7 @@
                :effect (effect (wait-for
                               (lose-credits state :corp 2)
                               (move state side card :destroyed)
-                              (let [trash-target (first (shuffle (get-in @state [:corp :hand])))]
+                              (let [trash-target (first (rng/shuffle (get-in @state [:corp :hand])))]
                                 (if trash-target
                                   (trash state :corp eid trash-target {:cause-card card})
                                   (effect-completed state side eid)))))}})

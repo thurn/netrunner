@@ -1,5 +1,5 @@
 (ns game.core.effects
-  (:require [clj-uuid :as uuid]
+  (:require [game.rng :as rng] [clj-uuid :as uuid]
             [game.core.card :refer [facedown? get-card runner?]]
             [game.core.card-defs :refer [card-def]]
             [game.core.eid :refer [make-eid]]
@@ -139,7 +139,7 @@
                         :static true
                         :duration :while-active
                         :card card
-                        :uuid (uuid/v1)))]
+                        :uuid (rng/uuid-v1)))]
       (swap! state update :effects
              #(apply conj (into [] %) abilities))
       (update-disabled-cards state)
@@ -163,7 +163,7 @@
                   :duration (:duration ability true)
                   :card card
                   :lingering true
-                  :uuid (uuid/v1))]
+                  :uuid (rng/uuid-v1))]
     (swap! state update :effects conj ability)
     (update-disabled-cards state)
     ability))

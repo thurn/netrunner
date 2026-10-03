@@ -1,5 +1,6 @@
 (ns game.cards.operations
   (:require
+[game.rng :as rng]
    [clojure.set :as set]
    [game.core.access :refer [access-card steal-cost-bonus]]
    [game.core.actions :refer [advance score]]
@@ -525,7 +526,7 @@
           {:cost [(->c :credit 2)]
            :req (req (seq (:hand runner)))
            :async true
-           :effect (effect (let [target-card (first (shuffle (:hand runner)))]
+           :effect (effect (let [target-card (first (rng/shuffle (:hand runner)))]
                           (wait-for
                             (reveal-loud state side card {:and-then " and shuffle it into the Stack"} target-card)
                             (move state :runner target-card :deck)
@@ -536,10 +537,10 @@
       :req (req (or (last-turn? state :runner :trashed-card)
                     (last-turn? state :runner :stole-agenda)))
       :effect (effect
-                (let [chosen-cards (take 2 (shuffle (:hand runner)))]
+                (let [chosen-cards (take 2 (rng/shuffle (:hand runner)))]
                   (wait-for
                     (reveal-loud state side card {:and-then " and place [them] on the top of the stack (in a random order)"} chosen-cards)
-                    (doseq [c (shuffle chosen-cards)]
+                    (doseq [c (rng/shuffle chosen-cards)]
                       (move state :runner c :deck {:front true}))
                     (continue-ability
                       state side

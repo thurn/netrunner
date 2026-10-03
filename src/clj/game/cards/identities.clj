@@ -1,5 +1,6 @@
 (ns game.cards.identities
   (:require
+[game.rng :as rng]
    [game.core.access :refer [access-bonus access-cost-bonus access-non-agenda]]
    [game.core.bad-publicity :refer [gain-bad-publicity]]
    [game.core.board :refer [all-active-installed all-installed card->server
@@ -1529,7 +1530,7 @@
                :effect (effect (update!
                                  state side (assoc card
                                         :face :front
-                                        :melies-target (first (shuffle ["HQ" "R&D" "Archives"]))))
+                                        :melies-target (first (rng/shuffle ["HQ" "R&D" "Archives"]))))
                                (system-msg state side "reveals that the three hidden faces of Méliès U: Only the Brightest are: Tenure Floors: Méliès U, Subsurface Labs: Méliès U, and Disposal Grounds: Méliès U"))}
               ;; When your turn ends, you secretly choose a server
               {:event :corp-turn-ends

@@ -1,5 +1,6 @@
 (ns game.core.access
   (:require
+   [game.rng :as rng]
     [clojure.set :as clj-set]
     [clojure.string :as string]
     [game.core.agendas :refer [update-all-advancement-requirements update-all-agenda-points]]
@@ -1140,7 +1141,7 @@
                    nil nil))))
 
         facedown-cards-fn
-        (effect (let [accessed (first (shuffle (facedown-cards state already-accessed-fn)))
+        (effect (let [accessed (first (rng/shuffle (facedown-cards state already-accessed-fn)))
                    already-accessed (conj already-accessed (:cid accessed))
                    access-amount {:total-mod (access-bonus-count state side :total)
                                   :chosen (inc chosen)}]

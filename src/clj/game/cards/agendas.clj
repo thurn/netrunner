@@ -1,5 +1,6 @@
 (ns game.cards.agendas
   (:require
+[game.rng :as rng]
    [clojure.set :as set]
    [clojure.string :as str]
    [game.core.access :refer [steal-cost-bonus]]
@@ -502,7 +503,7 @@
       :effect (effect (if (pos? target)
                      (wait-for
                        (pay state :corp (make-eid state eid) card (->c :credit target))
-                       (let [from (take target (shuffle (:hand runner)))]
+                       (let [from (take target (rng/shuffle (:hand runner)))]
                          (doseq [c from]
                            (move state :runner c :deck))
                          (system-msg state side (str "uses " (:title card) " to pay " target
@@ -1736,7 +1737,7 @@
 (defcard "Personality Profiles"
   (let [pp {:req (req (pos? (count (:hand runner))))
             :async true
-            :effect (effect (let [c (first (shuffle (:hand runner)))]
+            :effect (effect (let [c (first (rng/shuffle (:hand runner)))]
                            (system-msg state side (str "uses " (:title card) " to force the Runner"
                                                        " to trash " (:title c)
                                                        " from the grip at random"))
@@ -2051,7 +2052,7 @@
                                   (wait-for (draw state :corp n)
                                             ; if corp chooses more cards than runner's hand, don't shuffle runner hand back into Stack
                                             (if (<= n (count (:hand runner)))
-                                              (do (doseq [r (take n (shuffle (:hand runner)))] (move state :runner r :deck))
+                                              (do (doseq [r (take n (rng/shuffle (:hand runner)))] (move state :runner r :deck))
                                                   (queue-event state :runner-hand-changed?)
                                                   (checkpoint state side eid))
                                               (effect-completed state side eid))))

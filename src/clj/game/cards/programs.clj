@@ -1,5 +1,6 @@
 (ns game.cards.programs
   (:require
+[game.rng :as rng]
    [game.core.access :refer [access-bonus max-access turn-archives-faceup]]
    [game.core.board :refer [all-active all-active-installed all-installed all-installed-runner-type
                             card->server server->zone]]
@@ -1714,7 +1715,7 @@
              :async true
              :effect (effect (wait-for
                             (trash-cards state :corp (make-eid state eid)
-                                         (take 2 (shuffle (:hand corp))) {:cause-card card})
+                                         (take 2 (rng/shuffle (:hand corp))) {:cause-card card})
                             (trash state :runner eid card {:cause :purge :cause-card card})))}]})
 
 (defcard "Hantu"

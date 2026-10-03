@@ -1,6 +1,7 @@
 (ns game.core.costs
   {:clj-kondo/ignore [:unused-binding]}
   (:require
+   [game.rng :as rng]
    [clojure.string :as str]
    [game.core.bad-publicity :refer [bad-publicity-available gain-bad-publicity lose-bad-publicity]]
    [game.core.board :refer [all-active all-active-installed all-installed all-installed-runner-type]]
@@ -933,7 +934,7 @@
   (<= 0 (- (count (get-in @state [side :hand])) (value cost))))
 (defmethod handler :reveal-and-randomly-trash-from-hand
   [cost state side eid card]
-  (let [to-trash (map #(assoc % :seen true) (take (value cost) (shuffle (get-in @state [side :hand]))))
+  (let [to-trash (map #(assoc % :seen true) (take (value cost) (rng/shuffle (get-in @state [side :hand]))))
         hand (if (= :corp side) "HQ" "the grip")]
     (wait-for (reveal state side to-trash)
               (wait-for (trash-cards state side to-trash
@@ -1191,7 +1192,7 @@
   [cost state side eid card]
   (let [deck (if (= :corp side) "R&D" "the stack")
         hand (get-in @state [side :hand])
-        chosen (take (value cost) (shuffle hand))]
+        chosen (take (value cost) (rng/shuffle hand))]
     (doseq [c chosen]
       (move state side c :deck))
     (complete-payment

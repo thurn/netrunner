@@ -1,5 +1,6 @@
 (ns game.core.engine
   (:require
+[game.rng :as rng]
    [clj-uuid :as uuid]
    [clojure.string :as string]
    [com.noahbogart.cond-plus :refer [cond+]]
@@ -504,7 +505,7 @@
                   {:event (:event ability)
                    :ability (dissoc ability :event)
                    :card card
-                   :uuid (uuid/v1)})
+                   :uuid (rng/uuid-v1)})
                 (into []))]
        (when (seq abilities)
          (swap! state update :suppress #(apply conj % abilities)))
@@ -565,7 +566,7 @@
    :once-per-instance (or (:once-per-instance ability) false)
    :ability (dissoc ability :event :duration :condition)
    :card card
-   :uuid (uuid/v1)})
+   :uuid (rng/uuid-v1)})
 
 (defn register-events
   "Registers each event handler defined in the given card definition."

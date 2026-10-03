@@ -1,4 +1,5 @@
-(ns game.core.toasts)
+(ns game.core.toasts
+  (:require [game.rng :as rng]))
 
 (defn toast
   "Adds a message to toast with specified severity (default as a warning) to the toast message list.
@@ -15,7 +16,7 @@
    ;; Allows passing just the toast msg-type as the options parameter
    (when message
      ;; normal toast - add to list
-     (swap! state update-in [side :toast] #(conj % {:msg message :type msg-type :options options :id (random-uuid)})))))
+     (swap! state update-in [side :toast] #(conj % {:msg message :type msg-type :options options :id (rng/uuid-v4)})))))
 
 (defn ack-toast
   ([state side {:keys [id]}]

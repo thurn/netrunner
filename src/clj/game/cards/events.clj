@@ -1,5 +1,6 @@
 (ns game.cards.events
   (:require
+[game.rng :as rng]
    [clojure.set :as set]
    [clojure.string :as str]
    [game.core.access :refer [access-card breach-server get-only-card-to-access
@@ -556,7 +557,7 @@
                  {:req (req (<= 1 (count (:hand corp))))
                   :async true
                   :effect (effect
-                            (let [chosen-cards (take 3 (shuffle (:hand corp)))]
+                            (let [chosen-cards (take 3 (rng/shuffle (:hand corp)))]
                               (wait-for
                                 (reveal-loud state side card nil chosen-cards)
                                 (continue-ability
@@ -1431,7 +1432,7 @@
                         "Operation" :trash-all-operations-by-type
                         "Upgrade" :trash-all-upgrades-by-type))
                 :async true
-                :effect (effect (let [cards-to-reveal (take 2 (shuffle (:hand corp)))
+                :effect (effect (let [cards-to-reveal (take 2 (rng/shuffle (:hand corp)))
                                    cards-to-trash (filter #(is-type? % target) cards-to-reveal)
                                    credits (* 4 (count cards-to-trash))]
                                (wait-for
@@ -1942,7 +1943,7 @@
                        :effect/count 5})
                 :effect (effect (doseq [c targets]
                                (move state side c :hand))
-                             (trash-cards state :corp eid (take 5 (shuffle (:hand (:corp @state))))
+                             (trash-cards state :corp eid (take 5 (rng/shuffle (:hand (:corp @state))))
                                           {:cause-card card}))}})]})
 
 (defcard "Government Investigations"
@@ -2249,8 +2250,8 @@
                      :max (effect (dec (count (:hand corp))))}
            :effect (effect (continue-ability
                           state :runner
-                             (which-pile (shuffle targets)
-                                         (shuffle (vec (set/difference
+                             (which-pile (rng/shuffle targets)
+                                         (rng/shuffle (vec (set/difference
                                                          (set (:hand corp)) (set targets)))))
                              card nil))}]
       {:makes-run true
@@ -4730,7 +4731,7 @@
                 :effect (effect (let [n (str->int target)]
                                (wait-for [{:keys [msg]} (pay state :runner (make-eid state eid) card (->c :click n))]
                                          (system-msg state :runner msg)
-                                         (trash-cards state :corp eid (take n (shuffle (:hand corp))) {:cause-card card}))))}})]})
+                                         (trash-cards state :corp eid (take n (rng/shuffle (:hand corp))) {:cause-card card}))))}})]})
 
 (defcard "Watch the World Burn"
   (letfn [(rfg-card-event [burned-card]

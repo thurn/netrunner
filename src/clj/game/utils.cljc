@@ -3,13 +3,14 @@
    [game.core.card :refer [get-title]]
    [jinteki.cards :refer [all-cards]]
    [clojure.string :as str]
+   [game.rng :as rng]
    [cljc.java-time.instant :as inst]))
 
 (defn make-cid []
-  (str (random-uuid)))
+  (rng/cid))
 
 (defn make-timestamp []
-  (inst/now))
+  #?(:clj (rng/timestamp) :cljs (inst/now)))
 
 (defn server-card
   ([title] (server-card title true))
