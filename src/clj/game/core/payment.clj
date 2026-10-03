@@ -1,5 +1,6 @@
 (ns game.core.payment
   (:require
+    [game.rng :as rng]
     [clojure.string :as string]
     [game.core.card :refer [ice?]]
     [game.core.eid :refer [make-eid]]
@@ -83,7 +84,7 @@
 (defn merge-costs
   "Combines disparate costs into a single cost per type."
   [costs]
-  (let [costs (if (sequential? costs) (flatten costs) [costs])
+  (let [costs (if (sequential? costs) (rng/flatten costs) [costs])
         ;; no need to remove non-costs because only valid costs will have :cost/additional
         {real false additional true} (group-by :cost/additional costs)
         real (group-costs real)

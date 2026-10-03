@@ -29,12 +29,12 @@
 (defn update-subtypes-for-card
   ([state side card] (update-subtypes-for-card state side card true))
   ([state _ card mods?]
-  (let [card (get-card state card)
+  (let [card (if mods? (get-card state card) card)
         old-subtypes (:subtypes card)
         new-subtypes (subtypes-for-card state card mods?)
         changed? (not= old-subtypes new-subtypes)]
     (when changed?
-      (update! state (to-keyword (:side card)) (assoc card :subtypes new-subtypes)))
+      (update! state (to-keyword (:side card)) (assoc (get-card state card) :subtypes new-subtypes)))
     changed?)))
 
 (defn update-all-subtypes

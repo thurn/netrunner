@@ -1,7 +1,7 @@
 (ns game.rng
   "Per-game seedable randomness and deterministic ids for headless AI play.
   When `*rng*` / `*ids*` are unbound, every function keeps upstream behaviour."
-  (:refer-clojure :exclude [shuffle rand-int rand-nth])
+  (:refer-clojure :exclude [shuffle rand-int rand-nth flatten])
   #?(:clj (:require [clj-uuid :as uuid])))
 
 #?(:clj
@@ -43,6 +43,13 @@
 
      (defn uuid-v1 []
        (if *ids* (java.util.UUID. 0x4d4f4e50 (next-id)) (uuid/v1)))
+
+     (defn flatten
+       "Eager equivalent of clojure.core/flatten for hot cost paths."
+       [x]
+       (if (sequential? x)
+         (persistent! ((fn step [acc y] (if (sequential? y) (reduce step acc y) (conj! acc y))) (transient []) x))
+         ()))
 
      (defn timestamp []
        (if *ids* (java.time.Instant/ofEpochSecond 0 (next-id)) (java.time.Instant/now))))

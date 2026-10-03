@@ -1331,7 +1331,7 @@
 
 (defn pay
   [state side eid card & costs]
-  (let [costs (flatten costs)
+  (let [costs (rng/flatten costs)
         costs (can-pay? state side eid card (:title card) costs)]
     (when (some keyword? costs)
       (throw (ex-info "Please convert to wrapped cost" {:args costs})))
