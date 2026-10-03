@@ -7,11 +7,12 @@
 
 (defn subtypes-for-card
   "Creates a sorted list of subtypes for the card. Returns nil if given a counter or fake agenda."
-  [state card]
+  ([state card] (subtypes-for-card state card true))
+  ([state card mods?]
   (when (:title card)
     (let [printed-subtypes (:subtypes (server-card (:title card)))
-          gained-subtypes (flatten (get-effects state nil :gain-subtype card))
-          lost-subtypes (flatten (get-effects state nil :lose-subtype card))
+          gained-subtypes (when mods? (flatten (get-effects state nil :gain-subtype card)))
+          lost-subtypes (when mods? (flatten (get-effects state nil :lose-subtype card)))
           total-gained (frequencies (concat printed-subtypes gained-subtypes))
           total-lost (frequencies lost-subtypes)
           total (reduce
@@ -23,24 +24,27 @@
                         (dissoc acc k))))
                   total-gained
                   total-lost)]
-      (into [] (sort (keys total))))))
+      (into [] (sort (keys total)))))))
 
 (defn update-subtypes-for-card
-  [state _ card]
+  ([state side card] (update-subtypes-for-card state side card true))
+  ([state _ card mods?]
   (let [card (get-card state card)
         old-subtypes (:subtypes card)
-        new-subtypes (subtypes-for-card state card)
+        new-subtypes (subtypes-for-card state card mods?)
         changed? (not= old-subtypes new-subtypes)]
     (when changed?
       (update! state (to-keyword (:side card)) (assoc card :subtypes new-subtypes)))
-    changed?))
+    changed?)))
 
 (defn update-all-subtypes
   ([state] (update-all-subtypes state nil))
   ([state _]
-   (reduce
-     (fn [changed? card]
-       (or (update-subtypes-for-card state nil card)
-           changed?))
-     false
-     (get-all-cards state))))
+   ;; fast path: skip the per-card effect scans when no subtype-changing effects exist
+   (let [mods? (some #(#{:gain-subtype :lose-subtype} (:type %)) (:effects @state))]
+     (reduce
+       (fn [changed? card]
+         (or (update-subtypes-for-card state nil card mods?)
+             changed?))
+       false
+       (get-all-cards state)))))

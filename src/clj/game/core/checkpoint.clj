@@ -1,5 +1,6 @@
 (ns game.core.checkpoint
   (:require
+   [game.rng :as rng]
    [game.core.agendas :refer [update-all-advancement-requirements update-all-agenda-points]]
    [game.core.actions :refer [generate-runnable-zones]]
    [game.core.board :refer [get-remotes clear-empty-remotes]]
@@ -17,7 +18,7 @@
   (loop [i 0]
     (let [changed [(update-all-ice state :corp)
                    (update-all-icebreakers state :runner)
-                   (update-all-card-labels state)
+                   (if rng/*headless* false (update-all-card-labels state))
                    (update-all-advancement-requirements state)
                    (update-all-agenda-points state)
                    (update-link state)

@@ -119,7 +119,9 @@
   "Gets all cards currently disabled"
   [state]
   (let [all-cards (get-all-cards state)
-        disabled-cards (filter #(or (is-disabled? state nil %)
+        ;; fast path: with no :disable-card effects only facedown runner cards are disabled
+        any-disable? (some #(= :disable-card (:type %)) (:effects @state))
+        disabled-cards (filter #(or (and any-disable? (is-disabled? state nil %))
                                     (and (runner? %) (facedown? %)))
                                all-cards)]
     (into {} (map (juxt :cid identity)) disabled-cards)))

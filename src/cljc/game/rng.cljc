@@ -10,6 +10,10 @@
        "A java.util.Random used for every game-logic random draw, or nil."
        nil)
 
+     (def ^:dynamic *headless*
+       "When true, skip work that only feeds the web UI (ability cost labels)."
+       false)
+
      (def ^:dynamic *ids*
        "An atom holding a long counter used for cids, uuids and timestamps, or nil."
        nil)
