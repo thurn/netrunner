@@ -1,6 +1,5 @@
 (ns game.core.prevention
   (:require
-   [clojure.set :as set]
    [clojure.string :as str]
    [game.core.board :refer [all-active all-active-installed]]
    [game.core.card :refer [get-card installed? resource? rezzed? same-card?]]
@@ -301,9 +300,9 @@
                              [% "cannot be trashed while there are other resources installed"]
                              :else nil)
                           targets)
-        trashable (if untrashable
-                    (vec (set/difference (set targets) (set (map first untrashable))))
-                    (vec targets))
+        ;; `untrashable` is a lazy seq (always truthy), and a set of cards iterates in
+        ;; identity-hash order (cards hold fns), so filter instead to keep `targets` order.
+        trashable (into [] (comp (remove (set (map first untrashable))) (distinct)) targets)
         untrashable (mapv (fn [[c reason]] {:card c :destination :discard :reason reason}) untrashable)
         trashable   (mapv (fn [c] {:card c :destination :discard}) trashable)]
     (doseq [{:keys [card reason]} untrashable]
