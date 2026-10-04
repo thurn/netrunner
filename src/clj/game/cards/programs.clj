@@ -1438,8 +1438,8 @@
                         card target)))}}}]})
 
 (defcard "Faust"
-  {:abilities [(break-sub [(->c :trash-from-hand 1)] 1)
-               (strength-pump [(->c :trash-from-hand 1)] 2)]})
+  (auto-icebreaker {:abilities [(break-sub [(->c :trash-from-hand 1)] 1)
+                                (strength-pump [(->c :trash-from-hand 1)] 2)]}))
 
 (defcard "Fawkes"
   {:abilities [(break-sub 1 1 "Sentry")
