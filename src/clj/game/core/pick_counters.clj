@@ -206,7 +206,7 @@
                           (pick-counter-triggers state side eid selected-cards :credit target-count message remainder bad-pub-spent)))
                       (continue-ability
                         state side
-                        (pick-credit-providing-cards provider-func eid target-count stealth-target selected-cards uses bad-pub-available bad-pub-spent)
+                        (pick-credit-providing-cards provider-func eid target-count stealth-target selected-cards nil uses bad-pub-available bad-pub-spent)
                         card nil)))]
      (if (or (not (pos? target-count))             ;; there is a limit
              (<= target-count counter-count)       ;; paid everything
